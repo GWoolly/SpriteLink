@@ -1,0 +1,16 @@
+{
+    "Lua.diagnostics.globals": [
+        "console_log",
+        "delete_pre_renamed_ase_file",
+        "temp_folder_name",
+        "app",
+        "Sprite",
+        "filename",
+        "directory",
+        "temp_folder",
+        "json"
+    ],
+    "Lua.diagnostics.disable": [
+        "inject-field"
+    ]
+}
