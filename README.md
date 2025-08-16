@@ -1,7 +1,7 @@
-Gameseprite
+SpriteLink
 ===========
 
-A set of Aseprite scripts that sync sprites between GameMaker and Aseprite.
+A set of Aseprite scripts that sync sprites between GameMaker Studio and Aseprite.
 
 # Features
 - Open a GameMaker sprite directly in Aseprite with one click.
@@ -33,7 +33,7 @@ By default, console logging is disabled and only prints a message when an issue 
 To enable console logging for successful imports and exports, set `Console_log = true` in either the import or export Lua scripts.
 
 # Contributions
-Contributions are welcome. You can help improve Gameseprite in the following ways:
+Contributions are welcome. You can help improve SpriteLink in the following ways:
 - Submit a pull request after making changes in a Forked repository.
 - Report issues or bugs by opening an issue in the repository with steps to reproduce the problem.
 - Suggest enhancements by opening an issue with details about the feature request. (Note that I may be busy with other projects)
