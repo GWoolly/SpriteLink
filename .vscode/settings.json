@@ -11,6 +11,7 @@
         "json"
     ],
     "Lua.diagnostics.disable": [
-        "inject-field"
+        "inject-field",
+        "undefined-field"
     ]
 }

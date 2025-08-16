@@ -2,7 +2,7 @@
 REM Point ASEPRITE_EXE to the install location of Aseprite in quotation marks.
 set ASEPRITE_EXE="C:\Program Files (x86)\Steam\steamapps\common\Aseprite\Aseprite.exe"
 
-set SCRIPT="gm_spr_import.lua"
+set SCRIPT="import_to_Aseprite.lua"
 
 REM Check if a file was provided
 if "%~1"=="" (

@@ -10,7 +10,9 @@ Console_log= false
 -- Requirements
 ------------------------
 json = require"json" --Allows you to load and save json files: https://github.com/dacap/export-aseprite-file/blob/master/json.lua
-
+local importer_funcs= require"import_to_Aseprite"
+-- Open_yy_file= require("import_to_Aseprite").Open_yy_file
+-- Print= require("import_to_Aseprite").Print
 
 -- Globals
 Filename = ""
@@ -22,11 +24,11 @@ Spr= nil
 ------------------------------------
 
 -- Debug Print when Console_log is enabled
-function Print( string )
-	if Console_log == true then
-		print(string)
-	end
-end
+-- function Print( string )
+-- 	if Console_log == true then
+-- 		print(string)
+-- 	end
+-- end
 
 
 function FS_delete_directory( dir_string)
@@ -49,36 +51,33 @@ end
 
 
 -- Returns parsed json from the sprite's YY file 
-function open_yy_file(filename)
-    -- Extract directory and GM Asset Name
-    -- local directory = filename:sub(1, filename:match'^.*()\\' - 1)
-	local haystack= app.fs.filePath(app.sprite.filename)
-	local needle= app.fs.pathSeparator
+-- function Open_yy_file()
+-- 	local haystack = app.fs.filePath(app.sprite.filename)
+-- 	local needle = app.fs.pathSeparator
 	
-	-- Get YY filename and path
-    local fileYY_name = haystack:sub(haystack:match(".*"..needle.."()"), haystack:len()) -- return end of string / sprite name
-    local filePath = haystack .. app.fs.pathSeparator .. fileYY_name .. ".yy"
+-- 	-- Get YY filename and path
+-- 	local fileYY_name = haystack:sub(haystack:match(".*"..needle.."()"), haystack:len())
+-- 	local yy_filePath = haystack .. app.fs.pathSeparator .. fileYY_name .. ".yy"
 	
-    
-    -- Open the YY file and parse its json data
-    local file = io.open(filePath)
-    if not file then
-        error("Could not open file: " .. filePath)
-    end
-    
-    local js = ""
-    for line in file:lines() do
-        js = js .. line
-    end
-    file:close()
-    
-	-- Fix null values disappearing
-	js= js:gsub('null', '"null"')
+-- 	-- Open the YY file and parse its json data
+-- 	local file = io.open(yy_filePath)
+-- 	if not file then
+-- 		error("Could not open file: " .. yy_filePath)
+-- 	end
 	
-    -- Parse JSON and return
-    local parsed_js = json.decode(js)
-    return parsed_js
-end
+-- 	-- Convert multi-line file to string
+-- 	local js = ""
+-- 	for line in file:lines() do
+-- 		js = js .. line
+-- 	end
+-- 	file:close()
+	
+-- 	-- Fix null values disappearing
+-- 	js = js:gsub('null', '"null"')
+	
+-- 	-- Parse JSON and return
+-- 	return json.decode(js)
+-- end
 
 
 
@@ -152,7 +151,7 @@ if app.sprite.filename:match(".*"..app.fs.pathSeparator.."()") == nil then
 else--Check if is GM asset
 
 	-- Check if this is a gamemaker sprite
-	js= open_yy_file(spr.filename)
+	js= Open_yy_file()
 
 	if js == nil then
 		app.command.SaveFile{ui= false} -- Save normally when not a GM sprite
@@ -167,11 +166,11 @@ Spr= app.sprite -- Active sprite
 
 -- Get Sprite's filename and directory
 Filename = app.sprite.filename
-Dir_asset= app.fs.filePath(app.sprite.filename)..app.fs.pathSeparator
+Dir_asset= app.fs.filePath(Filename)..app.fs.pathSeparator
 GM_asset= js.name
 
 -- DELETE OLD EXPORTED IMAGES
-local files= app.fs.listFiles(directory)
+local files= app.fs.listFiles(Dir_asset)
 for _,filename in pairs(files) do
 	-- print("File ".._..": "..filename)
 	if filename:find(".png") ~= nil then
@@ -294,5 +293,5 @@ if file then
 
 	Print("Finished exporting: "..GM_asset)
 else
-	print("Error writing to: "..yy_target)
+	print("Error writing to: "..yy_temp_file)
 end
