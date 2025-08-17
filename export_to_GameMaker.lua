@@ -11,8 +11,6 @@ Console_log= false
 ------------------------
 json = require"json" --Allows you to load and save json files: https://github.com/dacap/export-aseprite-file/blob/master/json.lua
 local importer_funcs= require"import_to_Aseprite"
--- Open_yy_file= require("import_to_Aseprite").Open_yy_file
--- Print= require("import_to_Aseprite").Print
 
 -- Globals
 Filename = ""
@@ -22,14 +20,6 @@ Spr= nil
 
 --#region FUNCTIONS
 ------------------------------------
-
--- Debug Print when Console_log is enabled
--- function Print( string )
--- 	if Console_log == true then
--- 		print(string)
--- 	end
--- end
-
 
 function FS_delete_directory( dir_string)
 	local dir= dir_string..app.fs.pathSeparator
@@ -47,37 +37,6 @@ function FS_delete_directory( dir_string)
 	end
 	os.remove(dir_string) -- delete directory
 end
-
-
-
--- Returns parsed json from the sprite's YY file 
--- function Open_yy_file()
--- 	local haystack = app.fs.filePath(app.sprite.filename)
--- 	local needle = app.fs.pathSeparator
-	
--- 	-- Get YY filename and path
--- 	local fileYY_name = haystack:sub(haystack:match(".*"..needle.."()"), haystack:len())
--- 	local yy_filePath = haystack .. app.fs.pathSeparator .. fileYY_name .. ".yy"
-	
--- 	-- Open the YY file and parse its json data
--- 	local file = io.open(yy_filePath)
--- 	if not file then
--- 		error("Could not open file: " .. yy_filePath)
--- 	end
-	
--- 	-- Convert multi-line file to string
--- 	local js = ""
--- 	for line in file:lines() do
--- 		js = js .. line
--- 	end
--- 	file:close()
-	
--- 	-- Fix null values disappearing
--- 	js = js:gsub('null', '"null"')
-	
--- 	-- Parse JSON and return
--- 	return json.decode(js)
--- end
 
 
 
@@ -289,6 +248,7 @@ if file then
 	os.rename(yy_file, yy_file.."DEL")-- Rename orignal yy file
 	os.rename(yy_temp_file, yy_file)-- Sneak in replacement yy file.
 	os.remove(yy_file.."DEL")-- Delete old yy file.
+	-- No one will ever know!
 	
 
 	Print("Finished exporting: "..GM_asset)
