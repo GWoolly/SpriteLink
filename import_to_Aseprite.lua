@@ -8,7 +8,7 @@ Console_log = false
 ------------------------
 -- Requirements
 ------------------------
-local json = require"json" --Allows you to load and save json files: https://github.com/dacap/export-aseprite-file/blob/master/json.lua
+json = require"utilities.json" --Allows you to load and save json files: https://github.com/dacap/export-aseprite-file/blob/master/json.lua
 
 -- Functions
 ------------------------------------
