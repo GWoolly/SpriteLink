@@ -4,28 +4,27 @@ on:
     tags:
       - "v*"       # Runs when you push a tag like v1.0.0
   workflow_dispatch: # Allow manual trigger from the GitHub UI
-
 jobs:
   build-zip:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+     
       - name: Merge utility scripts into main Lua files
         run: |
           # Create a temporary directory for processed files
           mkdir -p temp_processed
-          
+         
           # Function to merge utilities into a single file
           merge_utilities() {
             local target_file="$1"
             local temp_file="temp_processed/$(basename "$target_file")"
-            
+           
             echo "-- Merged utilities for $(basename "$target_file")" > "$temp_file"
             echo "-- Generated automatically by GitHub Actions" >> "$temp_file"
             echo "" >> "$temp_file"
-            
+           
             # Add all utility scripts at the top
             if [ -d "utilities" ]; then
               for util_file in utilities/*.lua; do
@@ -36,11 +35,11 @@ jobs:
                 fi
               done
             fi
-            
+           
             echo "-- === Main Script ===" >> "$temp_file"
             cat "$target_file" >> "$temp_file"
           }
-          
+         
           # Process all .lua files in the main directory (not subdirectories)
           for lua_file in *.lua; do
             if [ -f "$lua_file" ]; then
@@ -48,13 +47,12 @@ jobs:
               merge_utilities "$lua_file"
             fi
           done
-            
-              
-        - name: Create release folder
+     
+      - name: Create release folder
         run: |
           RELEASE_NAME="SpriteLink"
           mkdir "$RELEASE_NAME"
-        
+       
           # Copy everything except ignored files and utilities
           rsync -av ./ "$RELEASE_NAME/" \
             --exclude ".git/" \
@@ -69,7 +67,7 @@ jobs:
             --exclude "temp_processed/" \
             --exclude "utilities/" \
             --exclude "$RELEASE_NAME/"
-        
+       
           # Replace main directory Lua files with merged versions
           if [ -d "temp_processed" ]; then
             for merged_file in temp_processed/*.lua; do
@@ -78,11 +76,9 @@ jobs:
               fi
             done
           fi
-        
+       
           # Clean up temp directory
           rm -rf temp_processed
-
-      # Remove the "Create zip archive" step
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
