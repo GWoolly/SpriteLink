@@ -79,9 +79,10 @@ jobs:
           
           # Clean up temp directory
           rm -rf temp_processed
-      
+            
       - name: Create zip archive
         run: |
+          cd SpriteLink
           zip -r ../SpriteLink.zip .
       
       - name: Upload artifact
