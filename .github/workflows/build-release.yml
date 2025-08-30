@@ -52,7 +52,7 @@ jobs:
       - name: Create release folder
         run: |
           RELEASE_NAME="SpriteLink"
-          # mkdir "$RELEASE_NAME"
+          mkdir "$RELEASE_NAME"
           
           # Copy everything except ignored files
           rsync -av . "$RELEASE_NAME" \
