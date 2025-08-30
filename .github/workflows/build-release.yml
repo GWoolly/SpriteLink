@@ -34,18 +34,10 @@ jobs:
                   echo "-- === Utility Object: $util_name ===" >> "$temp_file"
                   echo "local $util_name = (function()" >> "$temp_file"
                   
-                  # Add the entire utility file content
+                  # Add the entire utility file content as-is
                   cat "$util_file" >> "$temp_file"
                   
                   echo "" >> "$temp_file"
-                  echo "-- Return the utility module" >> "$temp_file"
-                  echo "return {" >> "$temp_file"
-                  
-                  # Extract function names and add them to return table
-                  grep -E "^[[:space:]]*function[[:space:]]+[a-zA-Z_][a-zA-Z0-9_]*" "$util_file" | sed -E 's/^[[:space:]]*function[[:space:]]+([a-zA-Z_][a-zA-Z0-9_]*).*/  \1 = \1,/' >> "$temp_file"
-                  grep -E "^[[:space:]]*local[[:space:]]+function[[:space:]]+[a-zA-Z_][a-zA-Z0-9_]*" "$util_file" | sed -E 's/^[[:space:]]*local[[:space:]]+function[[:space:]]+([a-zA-Z_][a-zA-Z0-9_]*).*/  \1 = \1,/' >> "$temp_file"
-                  
-                  echo "}" >> "$temp_file"
                   echo "end)()" >> "$temp_file"
                   echo "" >> "$temp_file"
                 fi
