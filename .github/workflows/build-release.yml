@@ -54,7 +54,7 @@ jobs:
           RELEASE_NAME="SpriteLink"
           mkdir "$RELEASE_NAME"
           
-          # Copy everything except ignored files
+          # Copy everything except ignored files and utilities
           rsync -av . "$RELEASE_NAME" \
             --exclude ".git" \
             --exclude ".github" \
@@ -68,10 +68,17 @@ jobs:
             --exclude "temp_processed" \
             --exclude "utilities"
           
-          # Replace main Lua files with merged versions
+          # Replace main directory Lua files with merged versions
           if [ -d "temp_processed" ]; then
-            cp temp_processed/*.lua "$RELEASE_NAME/"
+            for merged_file in temp_processed/*.lua; do
+              if [ -f "$merged_file" ]; then
+                cp "$merged_file" "$RELEASE_NAME/"
+              fi
+            done
           fi
+          
+          # Clean up temp directory
+          rm -rf temp_processed
       
       - name: Create zip archive
         run: |
