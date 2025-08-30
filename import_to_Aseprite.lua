@@ -8,7 +8,7 @@ Console_log = false
 ------------------------
 -- Requirements
 ------------------------
-json = require"utilities.json" --Allows you to load and save json files: https://github.com/dacap/export-aseprite-file/blob/master/json.lua
+json= require"utilities.json" --Allows you to load and save json files: https://github.com/dacap/export-aseprite-file/blob/master/json.lua
 
 -- Functions
 ------------------------------------
@@ -45,6 +45,7 @@ function Open_yy_file()
 	js = js:gsub('null', '"null"')
 	
 	-- Parse JSON and return
+	print("test")
 	return json.decode(js)
 end
 
@@ -62,6 +63,7 @@ end
 
 -- Load JSON data from YY file
 js= Open_yy_file()
+	print("test2")
 if js == nil then
 	print("Error could not find YY file for "..app.sprite.filename)
 	return

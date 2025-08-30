@@ -9,7 +9,7 @@ Console_log= false
 ------------------------
 -- Requirements
 ------------------------
-json = require"utilities.json" --Allows you to load and save json files: https://github.com/dacap/export-aseprite-file/blob/master/json.lua
+require"utilities.json" --Allows you to load and save json files: https://github.com/dacap/export-aseprite-file/blob/master/json.lua
 local importer_funcs= require"import_to_Aseprite"
 
 -- Globals
@@ -222,7 +222,7 @@ for i, frame in ipairs(app.sprite.frames) do
 	end
 	
 	-- FRAMES
-	frame_data[i]= json.decode'{"$GMSpriteFrame":"","%Name":"ERR","name":"ERR","resourceType":"GMSpriteFrame","resourceVersion":"2.0",}'-- Create empty struct for this frame's data
+	frame_data[i]= json.decode'{"$GMSpriteFrame":"","%Name":"ERR","name":"ERR","resourceType":"GMSpriteFrame","resourceVersion":"2.0"}'-- Create empty struct for this frame's data
 	frame_data[i]["%Name"]= img_uid
 	frame_data[i]["name"]= img_uid
 	
