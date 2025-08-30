@@ -25,27 +25,48 @@ jobs:
             echo "-- Generated automatically by GitHub Actions" >> "$temp_file"
             echo "" >> "$temp_file"
            
-            # Add all utility scripts as objects
-            if [ -d "utilities" ]; then
-              for util_file in utilities/*.lua; do
-                if [ -f "$util_file" ]; then
-                  # Extract filename without extension
-                  local util_name=$(basename "$util_file" .lua)
-                  echo "-- === Utility Object: $util_name ===" >> "$temp_file"
-                  echo "local $util_name = (function()" >> "$temp_file"
-                  
-                  # Add the entire utility file content as-is
-                  cat "$util_file" >> "$temp_file"
-                  
-                  echo "" >> "$temp_file"
-                  echo "end)()" >> "$temp_file"
-                  echo "" >> "$temp_file"
+            # First, scan the main file for require statements and collect needed utilities
+            declare -A required_utils
+            if [ -f "$target_file" ]; then
+              while IFS= read -r line; do
+                # Match patterns like: local json = require"utilities.json" or local json = require("utilities.json")
+                if [[ "$line" =~ ^[[:space:]]*local[[:space:]]+([a-zA-Z_][a-zA-Z0-9_]*)[[:space:]]*=[[:space:]]*require[[:space:]]*[\(\"]utilities\.([a-zA-Z_][a-zA-Z0-9_]*) ]]; then
+                  local var_name="${BASH_REMATCH[1]}"
+                  local util_name="${BASH_REMATCH[2]}"
+                  required_utils["$util_name"]="$var_name"
                 fi
-              done
+              done < "$target_file"
             fi
            
+            # Add utility scripts for only the required ones
+            for util_name in "${!required_utils[@]}"; do
+              local var_name="${required_utils[$util_name]}"
+              local util_file="utilities/${util_name}.lua"
+              
+              if [ -f "$util_file" ]; then
+                echo "-- === Utility: $util_name (as $var_name) ===" >> "$temp_file"
+                echo "local $var_name = (function()" >> "$temp_file"
+                cat "$util_file" >> "$temp_file"
+                echo "" >> "$temp_file"
+                echo "end)()" >> "$temp_file"
+                echo "" >> "$temp_file"
+              fi
+            done
+           
             echo "-- === Main Script ===" >> "$temp_file"
-            cat "$target_file" >> "$temp_file"
+            
+            # Process the main file and replace require statements
+            while IFS= read -r line; do
+              # Check if this line has a require statement for a utility
+              if [[ "$line" =~ ^([[:space:]]*local[[:space:]]+[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]*=[[:space:]]*)require[[:space:]]*[\(\"]utilities\.([a-zA-Z_][a-zA-Z0-9_]*) ]]; then
+                local util_name="${BASH_REMATCH[2]}"
+                # Skip this line since we've already included the utility above
+                echo "-- Utility $util_name inlined above" >> "$temp_file"
+              else
+                # Copy the line as-is
+                echo "$line" >> "$temp_file"
+              fi
+            done < "$target_file"
           }
          
           # Process all .lua files in the main directory (not subdirectories)
