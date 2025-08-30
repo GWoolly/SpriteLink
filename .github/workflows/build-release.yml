@@ -51,45 +51,41 @@ jobs:
             
             
       - name: Create release folder
-        run: |
-          RELEASE_NAME="SpriteLink"
-          mkdir "$RELEASE_NAME"
-        
-          # Copy everything except ignored files and utilities
-          rsync -av ./ "$RELEASE_NAME/" \
-            --exclude ".git/" \
-            --exclude ".github/" \
-            --exclude ".gitignore" \
-            --exclude ".gitattributes" \
-            --exclude ".vscode/" \
-            --exclude "*.zip" \
-            --exclude "*.log" \
-            --exclude "*.tmp" \
-            --exclude "*.bak" \
-            --exclude "temp_processed/" \
-            --exclude "utilities/" \
-            --exclude "$RELEASE_NAME/"
-        
-          # Replace main directory Lua files with merged versions
-          if [ -d "temp_processed" ]; then
-            for merged_file in temp_processed/*.lua; do
-              if [ -f "$merged_file" ]; then
-                cp "$merged_file" "$RELEASE_NAME/"
-              fi
-            done
-          fi
-        
-          # Clean up temp directory
-          rm -rf temp_processed
-            
-
-      - name: Create zip archive
-        run: |
-          cd SpriteLink
-          zip -r ../SpriteLink.zip .
+      run: |
+        RELEASE_NAME="SpriteLink"
+        mkdir "$RELEASE_NAME"
       
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: SpriteLink
-          path: SpriteLink.zip
+        # Copy everything except ignored files and utilities
+        rsync -av ./ "$RELEASE_NAME/" \
+          --exclude ".git/" \
+          --exclude ".github/" \
+          --exclude ".gitignore" \
+          --exclude ".gitattributes" \
+          --exclude ".vscode/" \
+          --exclude "*.zip" \
+          --exclude "*.log" \
+          --exclude "*.tmp" \
+          --exclude "*.bak" \
+          --exclude "temp_processed/" \
+          --exclude "utilities/" \
+          --exclude "$RELEASE_NAME/"
+      
+        # Replace main directory Lua files with merged versions
+        if [ -d "temp_processed" ]; then
+          for merged_file in temp_processed/*.lua; do
+            if [ -f "$merged_file" ]; then
+              cp "$merged_file" "$RELEASE_NAME/"
+            fi
+          done
+        fi
+      
+        # Clean up temp directory
+        rm -rf temp_processed
+
+    # Remove the "Create zip archive" step
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: SpriteLink
+        path: SpriteLink/
