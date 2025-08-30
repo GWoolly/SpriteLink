@@ -148,10 +148,63 @@ app.fs.makeDirectory(dir_layers)-- recreate layers directory
 -- Perform export!
 ------------------
 
+-- Sprite Origin
+local origin= js.origin + 1
+local origin_x= js.sequence.xorigin
+local origin_y= js.sequence.yorigin
+switch_table= {
+	function()--0 TL
+		js.sequence.xorigin= 0
+		js.sequence.yorigin= 0
+	end,
+	function()--1 TM
+		js.sequence.xorigin= math.floor(app.sprite.width * 0.5)
+		js.sequence.yorigin= 0
+	end,
+	function()--2 TR
+		js.sequence.xorigin= app.sprite.width
+		js.sequence.yorigin= 0
+	end,
+	function()--3 ML
+		js.sequence.xorigin= 0
+		js.sequence.yorigin= math.floor(app.sprite.height * 0.5)
+	end,
+	function()--4 MM
+		js.sequence.xorigin= math.floor(app.sprite.width * 0.5)
+		js.sequence.yorigin= math.floor(app.sprite.height * 0.5)
+	end,
+	function()--5 MR
+		js.sequence.xorigin= app.sprite.width
+		js.sequence.yorigin= math.floor(app.sprite.height * 0.5)
+	end,
+	function()--6 BL
+		js.sequence.xorigin= 0
+		js.sequence.yorigin= app.sprite.height
+	end,
+	function()--7 BM
+		js.sequence.xorigin= math.floor(app.sprite.width * 0.5)
+		js.sequence.yorigin= app.sprite.height
+	end,
+	function()--8 BR
+		js.sequence.xorigin= app.sprite.width
+		js.sequence.yorigin= app.sprite.height
+	end,
+	function()--9 Custom
+		if app.sprite.width ~= js.width or app.sprite.height ~= js.height then
+			print("Sprite's custom origin has changed due to canvas resize!")
+		end
+	end,
+}
+
+switch_table[origin]()
+
 -- Update sprite info
 js.sequence.length= #app.sprite.frames -- get array length
 js.width= app.sprite.width
 js.height= app.sprite.height
+--
+js.sequence.seqWidth= js.width
+js.sequence.seqHeight= js.height
 
 
 -- Prepare frame data
@@ -209,10 +262,13 @@ for i, frame in ipairs(app.sprite.frames) do
 	frame_key= frame_key + frame_duration-- Get timeline position of next frame
 
 	
+	app.command.FlattenLayers()-- flatten image
+
 	-- Export images
-	newFile:saveCopyAs( Dir_asset..img_uid..".png")-- Exported Frame
 	newFile:saveCopyAs( Dir_asset.."layers"..app.fs.pathSeparator..img_uid..app.fs.pathSeparator..layer_uid..".png")-- Exported as solo Layer
+	newFile:saveCopyAs( Dir_asset..img_uid..".png")-- Exported Frame
 	
+
 	-- Finish up exporting current frame
 	newFile:close()
 	app.sprite = Spr
@@ -221,7 +277,6 @@ end
 
 -- Replace json frame data with local
 js.frames= frame_data
-
 
 
 -------------------
