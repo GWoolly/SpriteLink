@@ -85,3 +85,28 @@ jobs:
         with:
           name: SpriteLink
           path: SpriteLink/
+      
+      - name: Create zip file for release
+        run: |
+          cd SpriteLink
+          zip -r ../SpriteLink.zip .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SpriteLink
+          path: SpriteLink/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: SpriteLink.zip
+          generate_release_notes: true
+          name: Release ${{ github.ref_name }}
+          body: |
+            Auto-generated release for SpriteLink ${{ github.ref_name }}
+            
+            ## What's included:
+            - Merged Lua files with utilities included
+            - All project files except development artifacts
