@@ -48,26 +48,28 @@ jobs:
               merge_utilities "$lua_file"
             fi
           done
-      
+            
+            
       - name: Create release folder
         run: |
           RELEASE_NAME="SpriteLink"
           mkdir "$RELEASE_NAME"
-          
+        
           # Copy everything except ignored files and utilities
-          rsync -av . "$RELEASE_NAME" \
-            --exclude ".git" \
-            --exclude ".github" \
+          rsync -av ./ "$RELEASE_NAME/" \
+            --exclude ".git/" \
+            --exclude ".github/" \
             --exclude ".gitignore" \
             --exclude ".gitattributes" \
-            --exclude ".vscode" \
+            --exclude ".vscode/" \
             --exclude "*.zip" \
             --exclude "*.log" \
             --exclude "*.tmp" \
             --exclude "*.bak" \
-            --exclude "temp_processed" \
-            --exclude "utilities"
-          
+            --exclude "temp_processed/" \
+            --exclude "utilities/" \
+            --exclude "$RELEASE_NAME/"
+        
           # Replace main directory Lua files with merged versions
           if [ -d "temp_processed" ]; then
             for merged_file in temp_processed/*.lua; do
@@ -76,10 +78,11 @@ jobs:
               fi
             done
           fi
-          
+        
           # Clean up temp directory
           rm -rf temp_processed
             
+
       - name: Create zip archive
         run: |
           cd SpriteLink
