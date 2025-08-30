@@ -73,9 +73,9 @@ jobs:
             cp temp_processed/*.lua "$RELEASE_NAME/"
           fi
       
-      - name: Create zip archive
-        run: |
-          zip -r SpriteLink.zip SpriteLink
+      # - name: Create zip archive
+      #   run: |
+      #     zip -r SpriteLink.zip SpriteLink
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
